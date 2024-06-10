@@ -1,3 +1,4 @@
+import { IntegraflowFragment } from "@modules/layout/components/integraflow"
 import { Metadata } from "next"
 import "styles/globals.css"
 
@@ -12,6 +13,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html lang="en" data-mode="light">
       <body>
         <main className="relative">{props.children}</main>
+        <IntegraflowFragment />
       </body>
     </html>
   )
