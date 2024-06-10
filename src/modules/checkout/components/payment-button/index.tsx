@@ -2,13 +2,14 @@
 
 import { Cart, PaymentSession } from "@medusajs/medusa"
 import { Button } from "@medusajs/ui"
+import { placeOrder } from "@modules/checkout/actions"
+import Spinner from "@modules/common/icons/spinner"
 import { OnApproveActions, OnApproveData } from "@paypal/paypal-js"
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
-import { placeOrder } from "@modules/checkout/actions"
+import Integraflow from "integraflow-js"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
-import Spinner from "@modules/common/icons/spinner"
 
 type PaymentButtonProps = {
   cart: Omit<Cart, "refundable_amount" | "refunded_total">
@@ -48,7 +49,11 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
       )
     case "manual":
       return (
-        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+        <ManualTestPaymentButton
+          notReady={notReady}
+          data-testid={dataTestId}
+          cart={cart}
+        />
       )
     case "paypal":
       return (
@@ -249,15 +254,38 @@ const PayPalPaymentButton = ({
   }
 }
 
-const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
+const ManualTestPaymentButton = ({
+  notReady,
+  cart,
+}: {
+  notReady: boolean
+  cart: Omit<Cart, "refundable_amount" | "refunded_total">
+}) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const onPaymentCompleted = async () => {
-    await placeOrder().catch((err) => {
-      setErrorMessage(err.toString())
-      setSubmitting(false)
-    })
+    await placeOrder()
+      .then(() => {
+        Integraflow.getClient().track("checkout", {
+          completed_at: new Date().toISOString(),
+          shipping_tax_total: cart.shipping_tax_total,
+          shipping_total: cart.shipping_total,
+          subtotal: cart.subtotal,
+          tax_total: cart.tax_total,
+          total: cart.total,
+          discount_total: cart.discount_total,
+          gift_card_total: cart.gift_card_total,
+          gift_card_tax_total: cart.gift_card_tax_total,
+          item_total: cart.items.reduce((total, item) => {
+            return total + item.quantity
+          }, 0),
+        })
+      })
+      .catch((err) => {
+        setErrorMessage(err.toString())
+        setSubmitting(false)
+      })
   }
 
   const handlePayment = () => {
