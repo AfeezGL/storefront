@@ -1,13 +1,13 @@
-import { LineItem } from "@medusajs/medusa"
+import { Cart as CartI, LineItem } from "@medusajs/medusa"
 import { Metadata } from "next"
 import { cookies } from "next/headers"
 
 import CartTemplate from "@modules/cart/templates"
 
-import { enrichLineItems } from "@modules/cart/actions"
-import { getCheckoutStep } from "@lib/util/get-checkout-step"
-import { CartWithCheckoutStep } from "types/global"
 import { getCart, getCustomer } from "@lib/data"
+import { getCheckoutStep } from "@lib/util/get-checkout-step"
+import { enrichLineItems } from "@modules/cart/actions"
+import { CartWithCheckoutStep } from "types/global"
 
 export const metadata: Metadata = {
   title: "Cart",
@@ -22,7 +22,8 @@ const fetchCart = async () => {
   }
 
   const cart = await getCart(cartId).then(
-    (cart) => cart as CartWithCheckoutStep
+    (cart: Omit<CartI, "refundable_amount" | "refunded_total"> | null) =>
+      cart as CartWithCheckoutStep
   )
 
   if (!cart) {

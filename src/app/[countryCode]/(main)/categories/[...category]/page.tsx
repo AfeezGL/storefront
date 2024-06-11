@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { getCategoryByHandle, listCategories, listRegions } from "@lib/data"
+import { ProductCategory, Region } from "@medusajs/medusa"
 import CategoryTemplate from "@modules/categories/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
@@ -14,13 +15,13 @@ type Props = {
 }
 
 export async function generateStaticParams() {
-  const product_categories = await listCategories()
+  const product_categories: ProductCategory[] | null = await listCategories()
 
   if (!product_categories) {
     return []
   }
 
-  const countryCodes = await listRegions().then((regions) =>
+  const countryCodes: string[] = await listRegions().then((regions: Region[]) =>
     regions?.map((r) => r.countries.map((c) => c.iso_2)).flat()
   )
 
@@ -42,10 +43,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { product_categories } = await getCategoryByHandle(
       params.category
-    ).then((product_categories) => product_categories)
+    ).then((product_categories: any) => product_categories)
 
     const title = product_categories
-      .map((category) => category.name)
+      .map((category: any) => category.name)
       .join(" | ")
 
     const description =
@@ -69,7 +70,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   const { product_categories } = await getCategoryByHandle(
     params.category
-  ).then((product_categories) => product_categories)
+  ).then((product_categories: any) => product_categories)
 
   if (!product_categories) {
     notFound()
