@@ -11,7 +11,7 @@ export default async function Footer() {
 
   return (
     <footer className="border-t border-ui-border-base w-full">
-      <div className="content-containerflex | flex-col w-full">
+      <div className="content-containerflex flex-col w-full">
         <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
           <div>
             <LocalizedClientLink
@@ -21,10 +21,10 @@ export default async function Footer() {
               Integraflow Store
             </LocalizedClientLink>
           </div>
-          <div className="text-small-regular | gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
+          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
             {product_categories && product_categories?.length > 0 && (
               <div className="flex flex-col gap-y-2">
-                <span className="txt-ui-fg-base | txt-small-plus">
+                <span className="txt-ui-fg-base txt-small-plus">
                   Categories
                 </span>
                 <ul
@@ -82,7 +82,7 @@ export default async function Footer() {
             )}
             {collections && collections.length > 0 && (
               <div className="flex flex-col gap-y-2">
-                <span className="txt-ui-fg-base | txt-small-plus">
+                <span className="txt-ui-fg-base txt-small-plus">
                   Collections
                 </span>
                 <ul
@@ -107,7 +107,7 @@ export default async function Footer() {
               </div>
             )}
             <div className="flex flex-col gap-y-2">
-              <span className="txt-ui-fg-base | txt-small-plus">Medusa</span>
+              <span className="txt-ui-fg-base txt-small-plus">Medusa</span>
               <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
                 <li>
                   <a
