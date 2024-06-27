@@ -17,9 +17,7 @@ type OverviewProps = {
 const Overview = ({ customer, orders }: OverviewProps) => {
   useEffect(() => {
     if (customer) {
-      Integraflow.init({
-        appKey: process.env.NEXT_PUBLIC_INTEGRAFLOW_API_KEY,
-      }).identify(customer?.id, removeNullValues(customer))
+      Integraflow.getClient().identify(customer?.id, removeNullValues(customer))
 
       if (isLessThanOneMinute(new Date(customer.created_at))) {
         Integraflow.getClient().track("signup", removeNullValues(customer))
