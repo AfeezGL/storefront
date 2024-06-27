@@ -9,3 +9,10 @@ export const removeNullValues = (obj: Record<string, any>) => {
   }
   return result
 }
+export function isLessThanOneMinute(date: Date): boolean {
+  const oneMinuteInMilliseconds = 60 * 1000 // 60 seconds * 1000 milliseconds
+  const now = new Date()
+  const difference = now.getTime() - date.getTime()
+
+  return difference < oneMinuteInMilliseconds
+}

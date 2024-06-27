@@ -1,5 +1,5 @@
 "use client"
-import { removeNullValues } from "@lib/util/my-utils"
+import { isLessThanOneMinute, removeNullValues } from "@lib/util/my-utils"
 import { formatAmount } from "@lib/util/prices"
 import { Customer, Order } from "@medusajs/medusa"
 import { Container } from "@medusajs/ui"
@@ -20,6 +20,10 @@ const Overview = ({ customer, orders }: OverviewProps) => {
       Integraflow.init({
         appKey: process.env.NEXT_PUBLIC_INTEGRAFLOW_API_KEY,
       }).identify(customer?.id, removeNullValues(customer))
+
+      if (isLessThanOneMinute(new Date(customer.created_at))) {
+        Integraflow.getClient().track("signup", removeNullValues(customer))
+      }
     }
   }, [customer])
 
