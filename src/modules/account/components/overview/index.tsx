@@ -6,7 +6,6 @@ import { Container } from "@medusajs/ui"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ChevronDown from "@modules/common/icons/chevron-down"
-import Integraflow from "integraflow-js"
 import { useEffect } from "react"
 
 type OverviewProps = {
@@ -16,13 +15,21 @@ type OverviewProps = {
 
 const Overview = ({ customer, orders }: OverviewProps) => {
   useEffect(() => {
-    if (customer) {
-      Integraflow.getClient().identify(customer?.id, removeNullValues(customer))
+    const trackEvent = async () => {
+      const Integraflow = (await import("integraflow-js")).default
 
-      if (isLessThanOneMinute(new Date(customer.created_at))) {
-        Integraflow.getClient().track("signup", removeNullValues(customer))
+      if (customer) {
+        Integraflow.getClient().identify(
+          customer?.id,
+          removeNullValues(customer)
+        )
+
+        if (isLessThanOneMinute(new Date(customer.created_at))) {
+          Integraflow.getClient().track("signup", removeNullValues(customer))
+        }
       }
     }
+    trackEvent()
   }, [customer])
 
   return (

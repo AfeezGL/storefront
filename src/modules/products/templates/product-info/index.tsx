@@ -4,7 +4,6 @@ import { removeNullValues } from "@lib/util/my-utils"
 import { PricedProduct } from "@medusajs/medusa/dist/types/pricing"
 import { Heading, Text } from "@medusajs/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import Integraflow from "integraflow-js"
 import { useEffect } from "react"
 
 type ProductInfoProps = {
@@ -13,20 +12,26 @@ type ProductInfoProps = {
 
 const ProductInfo = ({ product }: ProductInfoProps) => {
   useEffect(() => {
-    Integraflow.getClient().track(
-      "view_product",
-      removeNullValues({
-        collection_id: product.collection_id,
-        title: product.title,
-        subtitle: product.subtitle,
-        type: product.type,
-        weight: product.weight,
-        discountable: product.discountable,
-        is_giftcard: product.is_giftcard,
-        id: product.id,
-        handle: product.handle,
-      })
-    )
+    const trackEvent = async () => {
+      const Integraflow = (await import("integraflow-js")).default
+
+      Integraflow.getClient().track(
+        "view_product",
+        removeNullValues({
+          collection_id: product.collection_id,
+          title: product.title,
+          subtitle: product.subtitle,
+          type: product.type,
+          weight: product.weight,
+          discountable: product.discountable,
+          is_giftcard: product.is_giftcard,
+          id: product.id,
+          handle: product.handle,
+        })
+      )
+    }
+
+    trackEvent()
   }, [])
 
   return (

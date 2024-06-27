@@ -5,7 +5,6 @@ import { formatAmount } from "@lib/util/prices"
 import { InformationCircleSolid } from "@medusajs/icons"
 import { Cart, Order } from "@medusajs/medusa"
 import { Tooltip } from "@medusajs/ui"
-import Integraflow from "integraflow-js"
 import React, { useEffect } from "react"
 
 type CartTotalsProps = {
@@ -31,23 +30,27 @@ const CartTotals: React.FC<CartTotalsProps> = ({ data }) => {
   }
 
   useEffect(() => {
-    console.log({ cart: data })
-    Integraflow.getClient().track(
-      "view_checkout",
-      removeNullValues({
-        shipping_tax_total: data.shipping_tax_total,
-        shipping_total: data.shipping_total,
-        subtotal: data.subtotal,
-        tax_total: data.tax_total,
-        total: data.total,
-        discount_total: data.discount_total,
-        gift_card_total: data.gift_card_total,
-        gift_card_tax_total: data.gift_card_tax_total,
-        item_total: data.items.reduce((total, item) => {
-          return total + item.quantity
-        }, 0),
-      })
-    )
+    const trackEvent = async () => {
+      const Integraflow = (await import("integraflow-js")).default
+
+      Integraflow.getClient().track(
+        "view_checkout",
+        removeNullValues({
+          shipping_tax_total: data.shipping_tax_total,
+          shipping_total: data.shipping_total,
+          subtotal: data.subtotal,
+          tax_total: data.tax_total,
+          total: data.total,
+          discount_total: data.discount_total,
+          gift_card_total: data.gift_card_total,
+          gift_card_tax_total: data.gift_card_tax_total,
+          item_total: data.items.reduce((total, item) => {
+            return total + item.quantity
+          }, 0),
+        })
+      )
+    }
+    trackEvent()
   }, [])
 
   return (
