@@ -12,6 +12,8 @@ import { addToCart } from "@modules/cart/actions"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/option-select"
 
+import { removeNullValues } from "@lib/util/my-utils"
+import Integraflow from "integraflow-js"
 import MobileActions from "../mobile-actions"
 import ProductPrice from "../product-price"
 
@@ -133,6 +135,27 @@ export default function ProductActions({
     })
 
     setIsAdding(false)
+    Integraflow.getClient().track(
+      "add_to_cart",
+      removeNullValues({
+        countryCode,
+        product_title: product.title,
+        product_subtitle: product.subtitle,
+        product_type: product.type,
+        product_weight: product.weight,
+        product_discountable: product.discountable,
+        product_is_giftcard: product.is_giftcard,
+        product_id: product.id,
+        product_handle: product.handle,
+        variant_title: variant.title,
+        variant_id: variant.id,
+        variant_rank: variant.variant_rank,
+        calculated_price: variant.calculated_price,
+        calculated_price_type: variant.calculated_price_type,
+        calculated_tax: variant.calculated_tax,
+        calculated_price_incl_tax: variant.calculated_price_incl_tax,
+      })
+    )
   }
 
   return (
