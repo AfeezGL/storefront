@@ -42,10 +42,8 @@ export default async function Checkout() {
   return (
     <div className="content-container | grid grid-cols-1 small:grid-cols-[1fr_416px] gap-x-40 py-12">
       <Wrapper cart={cart}>
-        {/* @ts-expect-error Server Component */}
         <CheckoutForm />
       </Wrapper>
-      {/* @ts-expect-error Server Component */}
       <CheckoutSummary />
     </div>
   )

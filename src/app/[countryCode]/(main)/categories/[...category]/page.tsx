@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { getCategoryByHandle, listCategories, listRegions } from "@lib/data"
-import { ProductCategory, Region } from "@medusajs/medusa"
+import { ProductCategory } from "@medusajs/medusa"
 import CategoryTemplate from "@modules/categories/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
@@ -21,9 +21,13 @@ export async function generateStaticParams() {
     return []
   }
 
-  const countryCodes: string[] = await listRegions().then((regions: Region[]) =>
-    regions?.map((r) => r.countries.map((c) => c.iso_2)).flat()
-  )
+  const countryCodes: string[] = await listRegions().then((regions) => {
+    if (!regions) {
+      return []
+    }
+
+    return regions?.map((r) => r.countries.map((c) => c.iso_2)).flat()
+  })
 
   const categoryHandles = product_categories.map((category) => category.handle)
 

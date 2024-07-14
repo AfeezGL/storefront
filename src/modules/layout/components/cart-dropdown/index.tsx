@@ -3,7 +3,7 @@
 import { Popover, Transition } from "@headlessui/react"
 import { Cart } from "@medusajs/medusa"
 import { Button } from "@medusajs/ui"
-import { useParams, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { Fragment, useEffect, useRef, useState } from "react"
 
 import { formatAmount } from "@lib/util/prices"
@@ -18,12 +18,10 @@ const CartDropdown = ({
 }: {
   cart?: Omit<Cart, "beforeInsert" | "afterLoad"> | null
 }) => {
-  const [activeTimer, setActiveTimer] = useState<NodeJS.Timer | undefined>(
+  const [activeTimer, setActiveTimer] = useState<NodeJS.Timeout | undefined>(
     undefined
   )
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false)
-
-  const { countryCode } = useParams()
 
   const open = () => setCartDropdownOpen(true)
   const close = () => setCartDropdownOpen(false)
@@ -104,7 +102,7 @@ const CartDropdown = ({
             </div>
             {cartState && cartState.items?.length ? (
               <>
-                <div className="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px">
+                <div className="no-scrollbar | overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 p-px">
                   {cartState.items
                     .sort((a, b) => {
                       return a.created_at > b.created_at ? -1 : 1
@@ -125,7 +123,7 @@ const CartDropdown = ({
                           <div className="flex flex-col flex-1">
                             <div className="flex items-start justify-between">
                               <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
-                                <h3 className="text-base-regular overflow-hidden text-ellipsis">
+                                <h3 className="text-base-regular | overflow-hidden text-ellipsis">
                                   <LocalizedClientLink
                                     href={`/products/${item.variant.product.handle}`}
                                     data-testid="product-link"
@@ -165,7 +163,7 @@ const CartDropdown = ({
                       </div>
                     ))}
                 </div>
-                <div className="p-4 flex flex-col gap-y-4 text-small-regular">
+                <div className="text-small-regular | p-4 flex flex-col gap-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-ui-fg-base font-semibold">
                       Subtotal{" "}
@@ -197,7 +195,7 @@ const CartDropdown = ({
             ) : (
               <div>
                 <div className="flex py-16 flex-col gap-y-4 items-center justify-center">
-                  <div className="bg-gray-900 text-small-regular flex items-center justify-center w-6 h-6 rounded-full text-white">
+                  <div className="text-small-regular | bg-gray-900 flex items-center justify-center w-6 h-6 rounded-full text-white">
                     <span>0</span>
                   </div>
                   <span>Your shopping bag is empty.</span>
