@@ -1,5 +1,6 @@
 "use client"
 
+import { useIntegraflow } from "@lib/hooks/useIntegraflow"
 import { removeNullValues } from "@lib/util/my-utils"
 import { PricedProduct } from "@medusajs/medusa/dist/types/pricing"
 import { Heading, Text } from "@medusajs/ui"
@@ -11,28 +12,23 @@ type ProductInfoProps = {
 }
 
 const ProductInfo = ({ product }: ProductInfoProps) => {
+  const { integraflow } = useIntegraflow()
   useEffect(() => {
-    const trackEvent = async () => {
-      const Integraflow = (await import("integraflow-js")).default
-
-      Integraflow.getClient().track(
-        "view_product",
-        removeNullValues({
-          collection_id: product.collection_id,
-          title: product.title,
-          subtitle: product.subtitle,
-          type: product.type,
-          weight: product.weight,
-          discountable: product.discountable,
-          is_giftcard: product.is_giftcard,
-          id: product.id,
-          handle: product.handle,
-        })
-      )
-    }
-
-    trackEvent()
-  }, [])
+    integraflow?.track(
+      "view_product",
+      removeNullValues({
+        collection_id: product.collection_id,
+        title: product.title,
+        subtitle: product.subtitle,
+        type: product.type,
+        weight: product.weight,
+        discountable: product.discountable,
+        is_giftcard: product.is_giftcard,
+        id: product.id,
+        handle: product.handle,
+      })
+    )
+  }, [integraflow, product])
 
   return (
     <div id="product-info">

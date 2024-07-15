@@ -1,5 +1,6 @@
 "use client"
 
+import { useIntegraflow } from "@lib/hooks/useIntegraflow"
 import { Cart, PaymentSession } from "@medusajs/medusa"
 import { Button } from "@medusajs/ui"
 import { placeOrder } from "@modules/checkout/actions"
@@ -7,7 +8,6 @@ import Spinner from "@modules/common/icons/spinner"
 import { OnApproveActions, OnApproveData } from "@paypal/paypal-js"
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
-import Integraflow from "integraflow-js"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
 
@@ -263,11 +263,12 @@ const ManualTestPaymentButton = ({
 }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { integraflow } = useIntegraflow()
 
   const onPaymentCompleted = async () => {
     await placeOrder()
       .then(() => {
-        Integraflow.getClient().track("checkout", {
+        integraflow?.track("checkout", {
           completed_at: new Date().toISOString(),
           shipping_tax_total: cart.shipping_tax_total,
           shipping_total: cart.shipping_total,

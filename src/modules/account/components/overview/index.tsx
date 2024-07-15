@@ -1,4 +1,5 @@
 "use client"
+import { useIntegraflow } from "@lib/hooks/useIntegraflow"
 import { isLessThanOneMinute, removeNullValues } from "@lib/util/my-utils"
 import { formatAmount } from "@lib/util/prices"
 import { Customer, Order } from "@medusajs/medusa"
@@ -14,23 +15,17 @@ type OverviewProps = {
 }
 
 const Overview = ({ customer, orders }: OverviewProps) => {
+  const { integraflow } = useIntegraflow()
+
   useEffect(() => {
-    const trackEvent = async () => {
-      const Integraflow = (await import("integraflow-js")).default
+    if (customer) {
+      integraflow?.identify(customer?.id, removeNullValues(customer))
 
-      if (customer) {
-        Integraflow.getClient().identify(
-          customer?.id,
-          removeNullValues(customer)
-        )
-
-        if (isLessThanOneMinute(new Date(customer.created_at))) {
-          Integraflow.getClient().track("signup", removeNullValues(customer))
-        }
+      if (isLessThanOneMinute(new Date(customer.created_at))) {
+        integraflow?.track("signup", removeNullValues(customer))
       }
     }
-    trackEvent()
-  }, [customer])
+  }, [customer, integraflow])
 
   return (
     <div data-testid="overview-page-wrapper">

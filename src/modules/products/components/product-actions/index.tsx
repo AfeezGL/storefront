@@ -12,8 +12,8 @@ import { addToCart } from "@modules/cart/actions"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/option-select"
 
+import { useIntegraflow } from "@lib/hooks/useIntegraflow"
 import { removeNullValues } from "@lib/util/my-utils"
-import Integraflow from "integraflow-js"
 import MobileActions from "../mobile-actions"
 import ProductPrice from "../product-price"
 
@@ -35,6 +35,7 @@ export default function ProductActions({
   region,
   disabled,
 }: ProductActionsProps) {
+  const { integraflow } = useIntegraflow()
   const [options, setOptions] = useState<Record<string, string>>({})
   const [isAdding, setIsAdding] = useState(false)
 
@@ -135,7 +136,7 @@ export default function ProductActions({
     })
 
     setIsAdding(false)
-    Integraflow.getClient().track(
+    integraflow?.track(
       "add_to_cart",
       removeNullValues({
         countryCode,
