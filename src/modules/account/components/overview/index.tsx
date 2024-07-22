@@ -19,10 +19,20 @@ const Overview = ({ customer, orders }: OverviewProps) => {
 
   useEffect(() => {
     if (customer) {
-      integraflow?.identify(customer?.id, removeNullValues(customer))
+      const attributes = removeNullValues({
+        id: customer.id,
+        email: customer.email,
+        first_name: customer.first_name,
+        last_name: customer.last_name,
+        has_account: customer.has_account,
+        phone: customer.phone,
+        created_at: customer.created_at,
+      })
+
+      integraflow?.identify(customer?.id, attributes)
 
       if (isLessThanOneMinute(new Date(customer.created_at))) {
-        integraflow?.track("signup", removeNullValues(customer))
+        integraflow?.track("signup", attributes)
       }
     }
   }, [customer, integraflow])
